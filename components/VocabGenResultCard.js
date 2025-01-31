@@ -10,6 +10,7 @@ export default function VocabGenResultCard({ result }) {
             </div>
         )
     })
+
     return (
         <div className="bg-white shadow-sm p-4 rounded-xl my-3">
             <h3 className="text-lg">

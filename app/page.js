@@ -21,12 +21,22 @@ export default function Home() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("User Input: ", userInput);
-    console.log("Language: ", language);
     const body = { userInput, language };
     console.log("body:", body);
-    // TODO: 將body POST到 /api/vocab-ai { userInput: "", language: "" }
 
+    setUserInput("");
+    setIsWaiting(true);
+
+    axios.post("/api/vocab-ai", body).then(res => {
+      setIsWaiting(false);
+      const result = res.data
+      console.log('response data',result);
+      setVocabList([result,...vocabList]);
+    }
+    ).catch(err => {
+      setIsWaiting(false);
+      alert("has unknow error ,please try again");
+    });
   }
 
   return (
@@ -70,21 +80,8 @@ export default function Home() {
         <div className="container mx-auto">
           {/* 等待後端回應時要顯示的載入畫面 */}
           {isWaiting ? <VocabGenResultPlaceholder /> : null}
-          {/* TODO: 顯示AI輸出結果 */}
-
-          {/* TODO: 一張單字生成卡的範例，串接正式API後移除 */}
-          <VocabGenResultCard
-            result={{
-              title: "水果",
-              payload: {
-                wordList: ["Apple", "Banana", "Cherry", "Date", "Elderberry"],
-                zhWordList: ["蘋果", "香蕉", "櫻桃", "棗子", "接骨木"],
-              },
-              language: "English",
-              createdAt: Date.now(),
-            }}
-          />
-
+          {/* 顯示AI輸出結果 */}
+          {vocabList.map(vocab => <VocabGenResultCard key={vocab.createdAt} result={vocab} />)}
         </div>
       </section>
     </>
