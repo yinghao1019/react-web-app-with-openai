@@ -2,6 +2,20 @@ import openai from "@/services/openai";
 import db from "@/services/db";
 
 
+export async function GET(req){
+    const docList=await db.collection("vocab-ai").orderBy("createdAt","desc").get();
+    const vocabList=[];
+
+    docList.forEach(doc => {
+        vocabList.push({
+            ...doc.data(),
+            id: doc.id
+        });
+    });
+
+    return Response.json(docList);
+}
+
 export async function POST(req) {
     const body = await req.json();
     console.log("body:", body);
@@ -43,6 +57,6 @@ export async function POST(req) {
         createdAt: Date.now()
     }
 
-    const dbData=db.collection('vocab-ai').add(result);
+    await db.collection('vocab-ai').add(result);
     return Response.json(result);
 }
