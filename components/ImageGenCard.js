@@ -9,6 +9,7 @@ export default function ImageGenCard({ imageURL, prompt }) {
                 width={1024}
                 height={1024}
                 className="w-full"
+                unoptimized={true}
             />
             <div className="p-3">
                 <h3 className="text-md">{prompt}</h3>

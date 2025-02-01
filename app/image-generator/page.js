@@ -13,16 +13,26 @@ export default function ImgGen() {
     const [userInput, setUserInput] = useState("");
     // 是否在等待回應
     const [isWaiting, setIsWaiting] = useState(false);
-    const [imageList,setImageList]=useState([]);
+    const [imageList, setImageList] = useState([]);
 
     const submitHandler = (e) => {
         e.preventDefault();
         console.log("User Input: ", userInput);
         const body = { userInput };
         console.log("body:", body);
-        // TODO: 將body POST到 /api/image-ai { userInput: "" }
+        // 將body POST到 /api/image-ai { userInput: "" }
+        setIsWaiting(true);
+        setUserInput("");
 
-
+        axios.post("/api/image-ai", body).then(res => {
+            setIsWaiting(false);
+            // 更新image list 狀態
+            setImageList([res.data, ...imageList]);
+        }).catch(err => {
+            setIsWaiting(false);
+            console.log(err);
+            alert("generate image error,please try again or contact developer");
+        })
     }
 
     return (
@@ -51,9 +61,16 @@ export default function ImgGen() {
                 </div>
             </section>
             <section>
-                <div className="container mx-auto">
-                    {/* TODO: 顯示AI輸出結果 */}
 
+            </section>
+            <section>
+                <div className="container mx-auto pt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
+                    {/* 顯示AI輸出結果 */}
+                    {isWaiting && <ImageGenPlaceholder />}
+                    {imageList.map(result => {
+                        const { imageUrl, prompt, createdAt } = result;
+                        return (<ImageGenCard imageURL={imageUrl} prompt={prompt} key={createdAt} />)
+                    })}
                 </div>
             </section>
         </>

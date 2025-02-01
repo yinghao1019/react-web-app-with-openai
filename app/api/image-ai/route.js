@@ -5,7 +5,20 @@ export async function POST(req) {
     console.log("body:", body);
     // TODO: 透過dall-e-3模型讓AI產生圖片
     // 文件連結: https://platform.openai.com/docs/guides/images/usage
-    const propmpt = ``;
+    const response = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: body.userInput,
+        n: 1,
+        size: "1024x1024",
+      });
 
-    return Response.json({ message: "Success" });
+      const aiImageUrl=response.data[0].url;
+      console.log("ai gen image url:",aiImageUrl);
+
+      const result = {
+        prompt: body.userInput,
+        imageUrl: aiImageUrl,
+        createdAt: Date.now()
+    }
+    return Response.json(result);
 }
