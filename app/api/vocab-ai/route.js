@@ -1,7 +1,6 @@
 import openai from "@/services/openai";
 import db from "@/services/db";
 
-
 export async function GET(req){
     const docList=await db.collection("vocab-ai").orderBy("createdAt","desc").get();
     const vocabList=[];
@@ -13,7 +12,7 @@ export async function GET(req){
         });
     });
 
-    return Response.json(docList);
+    return Response.json(vocabList);
 }
 
 export async function POST(req) {

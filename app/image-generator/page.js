@@ -6,11 +6,14 @@ import { faImage } from "@fortawesome/free-solid-svg-icons"
 import CurrentFileIndicator from "@/components/CurrentFileIndicator";
 import PageHeader from "@/components/PageHeader";
 import GeneratorButton from "@/components/GenerateButton";
+import ImageGenCard from "@/components/ImageGenCard";
+import ImageGenPlaceholder from "@/components/ImageGenPlaceholder";
 
 export default function ImgGen() {
     const [userInput, setUserInput] = useState("");
     // 是否在等待回應
     const [isWaiting, setIsWaiting] = useState(false);
+    const [imageList,setImageList]=useState([]);
 
     const submitHandler = (e) => {
         e.preventDefault();

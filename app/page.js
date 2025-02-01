@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { faEarthAmericas } from "@fortawesome/free-solid-svg-icons";
 import CurrentFileIndicator from "@/components/CurrentFileIndicator";
@@ -18,6 +18,19 @@ export default function Home() {
   const [isWaiting, setIsWaiting] = useState(false);
 
   const languageList = ["English", "Japanese", "Korean", "Spanish", "French", "German", "Italian"];
+  // useEffect (函式,陣列)
+  // 陣列內值有變化時，就會執行函式
+  // 陣列如果是空陣列, 就只會執行一次
+
+  useEffect(() => {
+    axios.get("/api/vocab-ai").then(res => {
+      console.log(res.data);
+      setVocabList(res.data);
+    }).catch(err => {
+      console.log("error", err);
+      alert("get vocab data error.please contact developer.");
+    })
+  }, [])
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -30,8 +43,8 @@ export default function Home() {
     axios.post("/api/vocab-ai", body).then(res => {
       setIsWaiting(false);
       const result = res.data
-      console.log('response data',result);
-      setVocabList([result,...vocabList]);
+      console.log('response data', result);
+      setVocabList([result, ...vocabList]);
     }
     ).catch(err => {
       setIsWaiting(false);
@@ -81,7 +94,7 @@ export default function Home() {
           {/* 等待後端回應時要顯示的載入畫面 */}
           {isWaiting ? <VocabGenResultPlaceholder /> : null}
           {/* 顯示AI輸出結果 */}
-          {vocabList.map(vocab => <VocabGenResultCard key={vocab.createdAt} result={vocab} />)}
+          {vocabList.map(vocab => <VocabGenResultCard key={vocab.id} result={vocab} />)}
         </div>
       </section>
     </>
