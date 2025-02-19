@@ -17,20 +17,31 @@ export default function Home() {
   // 是否在等待回應
   const [isWaiting, setIsWaiting] = useState(false);
 
-  const languageList = ["English", "Japanese", "Korean", "Spanish", "French", "German", "Italian"];
+  const languageList = [
+    "English",
+    "Japanese",
+    "Korean",
+    "Spanish",
+    "French",
+    "German",
+    "Italian",
+  ];
   // useEffect (函式,陣列)
   // 陣列內值有變化時，就會執行函式
   // 陣列如果是空陣列, 就只會執行一次
 
   useEffect(() => {
-    axios.get("/api/vocab-ai").then(res => {
-      console.log(res.data);
-      setVocabList(res.data);
-    }).catch(err => {
-      console.log("error", err);
-      alert("get vocab data error.please contact developer.");
-    })
-  }, [])
+    axios
+      .get("/api/vocab-ai")
+      .then((res) => {
+        console.log(res.data);
+        setVocabList(res.data);
+      })
+      .catch((err) => {
+        console.log("error", err);
+        alert("get vocab data error.please contact developer.");
+      });
+  }, []);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -40,17 +51,19 @@ export default function Home() {
     setUserInput("");
     setIsWaiting(true);
 
-    axios.post("/api/vocab-ai", body).then(res => {
-      setIsWaiting(false);
-      const result = res.data
-      console.log('response data', result);
-      setVocabList([result, ...vocabList]);
-    }
-    ).catch(err => {
-      setIsWaiting(false);
-      alert("has unknow error ,please try again");
-    });
-  }
+    axios
+      .post("/api/vocab-ai", body)
+      .then((res) => {
+        setIsWaiting(false);
+        const result = res.data;
+        console.log("response data", result);
+        setVocabList([result, ...vocabList]);
+      })
+      .catch((err) => {
+        setIsWaiting(false);
+        alert("has unknow error ,please try again");
+      });
+  };
 
   return (
     <>
@@ -77,9 +90,11 @@ export default function Home() {
                   onChange={(e) => setLanguage(e.target.value)}
                   required
                 >
-                  {
-                    languageList.map(language => <option key={language} value={language}>{language}</option>)
-                  }
+                  {languageList.map((language) => (
+                    <option key={language} value={language}>
+                      {language}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="w-1/5 px-2">
@@ -94,7 +109,9 @@ export default function Home() {
           {/* 等待後端回應時要顯示的載入畫面 */}
           {isWaiting ? <VocabGenResultPlaceholder /> : null}
           {/* 顯示AI輸出結果 */}
-          {vocabList.map(vocab => <VocabGenResultCard key={vocab.id} result={vocab} />)}
+          {vocabList.map((vocab) => (
+            <VocabGenResultCard key={vocab.id} result={vocab} />
+          ))}
         </div>
       </section>
     </>
