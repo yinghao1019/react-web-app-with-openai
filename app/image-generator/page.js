@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import axios from "axios";
 import { faImage } from "@fortawesome/free-solid-svg-icons"
 import CurrentFileIndicator from "@/components/CurrentFileIndicator";
@@ -34,6 +34,16 @@ export default function ImgGen() {
             alert("generate image error,please try again or contact developer");
         })
     }
+
+    useEffect(() => {
+        axios.get("/api/image-ai").then(res => {
+          console.log(res.data);
+          setImageList(res.data);
+        }).catch(err => {
+          console.log("error", err);
+          alert("get image data error.please contact developer.");
+        })
+      }, [])
 
     return (
         <>
